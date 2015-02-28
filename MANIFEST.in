@@ -1,0 +1,8 @@
+include README.rst
+include MANIFEST.in
+include CHANGELOG.rst
+include setup.py
+
+
+
+recursive-include project_demo *.py

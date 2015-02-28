@@ -1,0 +1,7 @@
+pycrypto
+fabric
+crypto
+
+six
+django
+django-debug-toolbar
