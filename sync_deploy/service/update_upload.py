@@ -6,7 +6,7 @@ __date__ = '2013/8/15'
 
 import os
 from fabric.api import *
-from config import env_ky, remote_folder
+from config import env_ky
 from common import MyUtilsOS
 from update_collector import config_update_datetime, record_action_files
 
@@ -36,10 +36,10 @@ class SyncUpload():
         with lcd(env_ky.storage_path):  # 切换到更新包存档目录
 
             local('tar czf %s.tar.gz %s.zip' % (env_ky.gen_pkg_name, env_ky.gen_pkg_name))  # 压缩本地更新包
-            put('%s.tar.gz' % env_ky.gen_pkg_name, remote_folder)  # 上传压缩包到远程目录
+            put('%s.tar.gz' % env_ky.gen_pkg_name, env_ky.remote_folder)  # 上传压缩包到远程目录
 
         # 远程文件解压覆盖
-        with cd(remote_folder):  # 切换到远程目录
+        with cd(env_ky.remote_folder):  # 切换到远程目录
             run('tar zxf %s.tar.gz' % env_ky.gen_pkg_name)  # 远程解压
             run('unzip %s.zip' % env_ky.gen_pkg_name)  # 远程解压
 
@@ -58,7 +58,7 @@ class SyncUpload():
             以项目的父级目录操作.
         """
 
-        remote_project_parent_dir = os.path.dirname(remote_folder)
+        remote_project_parent_dir = os.path.dirname(env_ky.remote_folder)
 
         # 上次发布前的备份文件
         bck_log = None
@@ -101,13 +101,13 @@ class SyncUpload():
         """
 
         backup_project_file_name = "backup_%s.tar.gz" % env_ky.gen_pkg_name
-        remote_project_parent_dir = os.path.dirname(remote_folder)
+        remote_project_parent_dir = os.path.dirname(env_ky.remote_folder)
 
         # 远程文件打包备份
         with cd(remote_project_parent_dir):  # 切换到远程目录
             xx = MyUtilsOS.is_file_in_folder(remote_project_parent_dir)
             print xx
-            run('tar -czf %s %s' % (backup_project_file_name, remote_folder))  # 远程项目打包备份
+            run('tar -czf %s %s' % (backup_project_file_name, env_ky.remote_folder))  # 远程项目打包备份
 
         # 远程备份记录
         # 这次发布前的备份文件

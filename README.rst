@@ -1,4 +1,4 @@
-test-service
+sync-deploy
 
 简介:
 -----

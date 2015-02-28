@@ -32,13 +32,19 @@ CUSTOM_FABRIC_MODULE = 'demo.fabric'
 CUSTOM_FABRIC_UPLOAD = 'update_upload'
 CUSTOM_FABRIC_ROLLBACK = 'update_rollback'
 
+CUSTOM_IGNORE_FOLDER = ('deploy',)  # 忽略掉某些指定文件夹
+CUSTOM_FILTER_TYPE = ('.pyo', '.pyc', '.js', '.css', '.html', '.gif', '.jpg', '.png')  # 查找哪些类型的文件
 
-env_ky_dict = {
-    # 'app_path': app_path,  # 当前应用系统路径
-    # 'project_path': project_path,  # 当前项目搜索目标
-    'storage_path': os.path.join(BASE_DIR, r'release', r'archives'),  # 生成文件存放路径
+# noinspection PyUnresolvedReferences
+CUSTOM_FABRIC_ENV = {
+    'project_path': BASE_DIR,  # 当前项目搜索目标
+    'storage_path': os.path.join(BASE_DIR, r'archives'),  # 生成文件存放路径
 
+    'filter_type': CUSTOM_FILTER_TYPE,
+    'ignore_folder': CUSTOM_IGNORE_FOLDER,
+    'dynamic_file_exist': None,  # 动态文件存在与否
 }
+
 
 # Application definition
 INSTALLED_APPS = (
