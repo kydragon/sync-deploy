@@ -42,7 +42,9 @@ CUSTOM_FABRIC_ENV = {
 
     'filter_type': CUSTOM_FILTER_TYPE,
     'ignore_folder': CUSTOM_IGNORE_FOLDER,
+
     'dynamic_file_exist': None,  # 动态文件存在与否
+    'remote_folder': '/opt/www/project'  # 远程服务器目录
 }
 
 

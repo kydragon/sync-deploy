@@ -11,16 +11,12 @@ from common import MyUtilsOS
 from update_collector import config_update_datetime, record_action_files
 
 
-class SyncUpload():
+class SyncUpload(object):
     """自动发布基类.
     """
 
-    def __init__(self):
-        pass
-
     def __update_upload(self):
-        u"""执行本地更新包的迭代操作.
-        """
+        u"""执行本地更新包的迭代操作."""
 
         # 配置起始点时间
         config_update_datetime(__file__)
@@ -29,7 +25,7 @@ class SyncUpload():
         self.upload_before()
 
         # 检索收集待上传文件
-        with lcd(env_ky.app_path):  # 切换的自动部署脚本目录
+        with lcd(env_ky.project_path):  # 切换的自动部署脚本目录
             record_action_files()  # 检索更新文件，记录更新文件，以zip存档更新文件
 
         # 上传更新包文件到远程
@@ -53,17 +49,13 @@ class SyncUpload():
             self.upload_after()
 
     def __update_rollback(self):
-        u"""更新发布失败, 执行回滚.
-
-            以项目的父级目录操作.
-        """
-
+        u"""更新发布失败, 执行回滚, 以项目的父级目录操作."""
         remote_project_parent_dir = os.path.dirname(env_ky.remote_folder)
 
         # 上次发布前的备份文件
         bck_log = None
         try:
-            bck_log = open('%s/backup_remote.log' % env_ky.app_path, 'rb')
+            bck_log = open('%s/backup_remote.log' % env_ky.project_path, 'rb')
             # 取文件记录的最后一行
             backup_project_file_name = str(bck_log.readlines()[-1].replace("\n", ""))
         except:
@@ -81,50 +73,32 @@ class SyncUpload():
         self.upload_after()
 
     def upload_before(self):
-        """上传前的工作
-        """
-
+        """上传前的工作."""
         self.__backup_for_rollback()
-        raise NotImplemented
 
     def upload_after(self):
-        """上传后的工作
-        """
-
-        raise NotImplemented
+        """上传后的工作."""
+        pass
 
     @staticmethod
     def __backup_for_rollback():
-        u"""远程文件打包备份, 用户迭代失败的回滚.
-
-            以项目的父级目录备份操作.
-        """
-
+        u"""远程文件打包备份, 用户迭代失败的回滚, 以项目的父级目录备份操作."""
         backup_project_file_name = "backup_%s.tar.gz" % env_ky.gen_pkg_name
         remote_project_parent_dir = os.path.dirname(env_ky.remote_folder)
 
         # 远程文件打包备份
         with cd(remote_project_parent_dir):  # 切换到远程目录
-            xx = MyUtilsOS.is_file_in_folder(remote_project_parent_dir)
-            print xx
+            MyUtilsOS.is_file_in_folder(remote_project_parent_dir)
             run('tar -czf %s %s' % (backup_project_file_name, env_ky.remote_folder))  # 远程项目打包备份
 
-        # 远程备份记录
-        # 这次发布前的备份文件
-        with lcd(env_ky.app_path):
+        # 远程备份记录, 这次发布前的备份文件.
+        with lcd(env_ky.project_path):
             local('echo %s >> backup_remote.log' % backup_project_file_name)
 
-    @classmethod
-    def upload(cls):
-        u"""执行本地更新包的迭代操作.
-        """
-        cls.__update_upload()
+    def upload(self):
+        u"""执行本地更新包的迭代操作."""
+        self.__update_upload()
 
-    @classmethod
-    def rollback(cls):
-        u"""更新发布失败, 执行回滚.
-
-            以项目的父级目录操作.
-        """
-
-        cls.__update_rollback()
+    def rollback(self):
+        u"""更新发布失败, 执行回滚, 以项目的父级目录操作."""
+        self.__update_rollback()

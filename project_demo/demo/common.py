@@ -8,20 +8,17 @@ __date__ = '2013/8/15'
 
 from fabric.api import *
 from sync_deploy import env_ky
-from config import svn_url
+
+svn_url = 'https://kylinfish-pc/svn/project'
 
 
 def update_svn_windows():
     u"""如果项目使用windows平台下SVN, 发布前获取下更新.
     """
 
-    # 注意: win下将svn增加到环境path中
-    # 比如: D:\Program Files\TortoiseSVN\bin
-    # TortoiseSVN 命令参考其帮助文档
-
-    # 切换到项目源码目录
+    # 注意: win下将svn增加到环境path中, 比如: D:\Program Files\TortoiseSVN\bin, TortoiseSVN 命令参考其帮助文档.
+    # 切换到项目源码目录, 从SVN地址更新项目源码.
     with lcd(env_ky.project_path):
-        # 从SVN地址更新项目源码
         local('TortoiseProc.exe /command:update /url:%s /path:%s /closeonend:1' % (svn_url, env_ky.project_path))
 
 
@@ -35,15 +32,13 @@ def site_restart():
 
 
 def sys_update():
-    u"""system update.
-    """
+    u"""system update."""
 
     run('apt-get update')
     run('apt-get upgrade')
 
 
 def my_command(str_cmd):
-    u"""执行指定命令, 一定要引号引住.
-    """
+    u"""执行指定命令, 一定要引号引住."""
 
     run(str_cmd)

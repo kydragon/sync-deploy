@@ -12,6 +12,4 @@ from fabric.api import env
 
 env.user = 'kylin'
 env.hosts = ['kylin@192.168.1.100', ]
-env.passwords = {'kylin@192.168.1.100': '123456789', }
-
-svn_url = 'https://kylinfish-pc/svn/project'
+env.passwords = {'kylin@192.168.1.100': '123456', }

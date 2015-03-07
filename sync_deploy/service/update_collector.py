@@ -55,7 +55,7 @@ def config_update_datetime(filename):
 
     try:
         # 优先使用配置文件, 注意, ini文件编码为ansi,以及日期的规范性, 否则容易异常
-        # config_file = os.path.join(env_ky.app_path, '*.ini')
+        # config_file = os.path.join(env_ky.project_path, '*.ini')
 
         config_file = '%s.ini' % os.path.splitext(filename)[0]
 
@@ -125,8 +125,7 @@ def search_match_files(directory):
 
 
 def record_action_files():
-    u"""根据配置信息, 寻找匹配条件的文件, 写入内容到日志文件.
-    """
+    u"""根据配置信息, 寻找匹配条件的文件, 写入内容到日志文件."""
 
     if not os.path.exists(env_ky.storage_path):
         os.makedirs(env_ky.storage_path)
@@ -155,10 +154,7 @@ def record_action_files():
 
 
 def console_running():
-    u"""以控制台的形式传值运行.
-
-        主要作用是赋值时间点, 然后执行功能操作．
-    """
+    u"""以控制台的形式传值运行, 主要作用是赋值时间点, 然后执行功能操作."""
 
     # 赋值时间点
     arg_num = len(sys.argv)

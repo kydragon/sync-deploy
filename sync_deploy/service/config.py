@@ -40,7 +40,7 @@ env_ky_dict = {
 }
 
 custom_fabric_env = getattr(settings, "CUSTOM_FABRIC_ENV", None)
-env_ky_dict.update(custom_fabric_env)
+if custom_fabric_env:
+    env_ky_dict.update(custom_fabric_env)
+
 env_ky = AttributeDict(env_ky_dict)
-
-
