@@ -6,41 +6,46 @@ __date__ = '2013/8/15'
 
 import os
 from fabric.api import *
-from config import env_ky
-from common import MyUtilsOS
-from update_collector import config_update_datetime, record_action_files
+from sync_deploy.models import SyncInfo
+from sync_deploy.service.config import env_ky
+from sync_deploy.service.common import MyUtilsOS
+from sync_deploy.service.update_collector import Collector
 
 
 class SyncUpload(object):
     """自动发布基类.
     """
 
+    def __init__(self):
+        latest_datetime = SyncInfo.objects.get_latest_datetime()
+        if latest_datetime:
+            self._collector = Collector(base_time=latest_datetime)
+        else:
+            self._collector = Collector()
+
     def __update_upload(self):
         u"""执行本地更新包的迭代操作."""
-
-        # 配置起始点时间
-        config_update_datetime(__file__)
 
         # 更新开始前
         self.upload_before()
 
         # 检索收集待上传文件
         with lcd(env_ky.project_path):  # 切换的自动部署脚本目录
-            record_action_files()  # 检索更新文件，记录更新文件，以zip存档更新文件
+            self._collector.record_action_files()  # 检索更新文件，记录更新文件，以zip存档更新文件
 
         # 上传更新包文件到远程
         with lcd(env_ky.storage_path):  # 切换到更新包存档目录
 
-            local('tar czf %s.tar.gz %s.zip' % (env_ky.gen_pkg_name, env_ky.gen_pkg_name))  # 压缩本地更新包
-            put('%s.tar.gz' % env_ky.gen_pkg_name, env_ky.remote_folder)  # 上传压缩包到远程目录
+            local('tar czf %s.tar.gz %s.zip' % (self._collector.gen_pkg_name, self._collector.gen_pkg_name))  # 压缩本地更新包
+            put('%s.tar.gz' % self._collector.gen_pkg_name, env_ky.remote_folder)  # 上传压缩包到远程目录
 
         # 远程文件解压覆盖
         with cd(env_ky.remote_folder):  # 切换到远程目录
-            run('tar zxf %s.tar.gz' % env_ky.gen_pkg_name)  # 远程解压
-            run('unzip %s.zip' % env_ky.gen_pkg_name)  # 远程解压
+            run('tar zxf %s.tar.gz' % self._collector.gen_pkg_name)  # 远程解压
+            run('unzip %s.zip' % self._collector.gen_pkg_name)  # 远程解压
 
-            run('rm %s.tar.gz' % env_ky.gen_pkg_name)  # 远程删除
-            run('rm %s.zip' % env_ky.gen_pkg_name)  # 远程删除
+            run('rm %s.tar.gz' % self._collector.gen_pkg_name)  # 远程删除
+            run('rm %s.zip' % self._collector.gen_pkg_name)  # 远程删除
 
         # 更新完成后
         if env_ky.dynamic_file_exist:
@@ -80,10 +85,9 @@ class SyncUpload(object):
         """上传后的工作."""
         pass
 
-    @staticmethod
-    def __backup_for_rollback():
+    def __backup_for_rollback(self):
         u"""远程文件打包备份, 用户迭代失败的回滚, 以项目的父级目录备份操作."""
-        backup_project_file_name = "backup_%s.tar.gz" % env_ky.gen_pkg_name
+        backup_project_file_name = "backup_%s.tar.gz" % self._collector.gen_pkg_name
         remote_project_parent_dir = os.path.dirname(env_ky.remote_folder)
 
         # 远程文件打包备份

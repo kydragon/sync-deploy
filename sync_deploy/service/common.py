@@ -10,6 +10,17 @@ __date__ = '2013/8/15'
 import os
 import six
 import zipfile
+import random
+from time import strftime, localtime
+
+
+def generate_name():
+    u"""生成当前日期+时间+随机数的文件名.
+    """
+
+    my_list = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    my_slice = ''.join(random.sample(my_list, 4))
+    return '%s%s' % (strftime("%Y%m%d%H%M%S", localtime()), my_slice)
 
 
 class MyUtilsOS(object):
