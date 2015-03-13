@@ -17,25 +17,32 @@ __date__ = '2013/8/15'
 
 import os
 import os.path
-from time import time, ctime, strftime, localtime
+from time import time, ctime
 
 import six
 
 from sync_deploy.service.common import generate_name, ZFile
 from sync_deploy.service.config import env_ky
+from sync_deploy.backends import save_backend
 
 
 class Collector(object):
     u"""最新更新的文件收集.
     """
 
-    def __init__(self, base_time=time()):
-        self._gen_pkg_name = generate_name()  # 生成文件的名称
+    def __init__(self, base_time=time(), remote_backup=True):
+
         self._base_time = base_time,  # 当前程序搜索起始日期
+        self._gen_pkg_name = generate_name()  # 生成更新包文件的名称
+        self._backup_pkg_name = "backup_before_%s.tar.gz" % self._gen_pkg_name if remote_backup else ''
 
     @property
     def gen_pkg_name(self):
         return self._gen_pkg_name
+
+    @property
+    def backup_pkg_name(self):
+        return self._backup_pkg_name
 
     def search_match_files(self, directory):
         u"""根据配置信息, 寻找匹配条件的文件.
@@ -86,10 +93,10 @@ class Collector(object):
         log_file.writelines(log_msgs)
         log_file.close()
 
-    def save_datetime(self):
-        # 记录该次的时间点, 作为下次的时间起点.
-        friendly_datetime_string = strftime("%Y-%m-%d %H:%M:%S\n", localtime(self._base_time))
-        os.system('echo %s >> %s' % (friendly_datetime_string, 'ss'))
+    def save_sync_info(self):
+        u"""记录该次的时间点, 作为下次的时间起点."""
+
+        save_backend(self._gen_pkg_name, self._base_time, self._backup_pkg_name)
 
 
 if __name__ == '__main__':

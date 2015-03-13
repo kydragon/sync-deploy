@@ -16,12 +16,16 @@ class SyncUpload(object):
     """自动发布基类.
     """
 
-    def __init__(self):
-        latest_datetime = SyncInfo.objects.get_latest_datetime()
-        if latest_datetime:
-            self._collector = Collector(base_time=latest_datetime)
+    def __init__(self, remote_backup=True):
+        """sss
+            :param remote_backup: 远程文件是否备份.
+        """
+
+        latest_sync_info = SyncInfo.objects.get_latest_datetime()
+        if latest_sync_info:
+            self._collector = Collector(base_time=latest_sync_info[0], remote_backup=remote_backup)
         else:
-            self._collector = Collector()
+            self._collector = Collector(remote_backup=remote_backup)
 
     def __update_upload(self):
         u"""执行本地更新包的迭代操作."""
@@ -79,25 +83,23 @@ class SyncUpload(object):
 
     def upload_before(self):
         """上传前的工作."""
+
         self.__backup_for_rollback()
 
     def upload_after(self):
         """上传后的工作."""
-        pass
+        self._collector.save_sync_info()
 
     def __backup_for_rollback(self):
         u"""远程文件打包备份, 用户迭代失败的回滚, 以项目的父级目录备份操作."""
-        backup_project_file_name = "backup_%s.tar.gz" % self._collector.gen_pkg_name
-        remote_project_parent_dir = os.path.dirname(env_ky.remote_folder)
 
-        # 远程文件打包备份
-        with cd(remote_project_parent_dir):  # 切换到远程目录
-            MyUtilsOS.is_file_in_folder(remote_project_parent_dir)
-            run('tar -czf %s %s' % (backup_project_file_name, env_ky.remote_folder))  # 远程项目打包备份
+        if self._collector.backup_pkg_name:
+            remote_project_parent_dir = os.path.dirname(env_ky.remote_folder)
 
-        # 远程备份记录, 这次发布前的备份文件.
-        with lcd(env_ky.project_path):
-            local('echo %s >> backup_remote.log' % backup_project_file_name)
+            # 远程文件打包备份
+            with cd(remote_project_parent_dir):  # 切换到远程目录
+                MyUtilsOS.is_file_in_folder(remote_project_parent_dir)
+                run('tar -czf %s %s' % (self._collector.backup_pkg_name, env_ky.remote_folder))  # 远程项目打包备份
 
     def upload(self):
         u"""执行本地更新包的迭代操作."""

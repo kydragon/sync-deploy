@@ -16,8 +16,9 @@ class DataManager(models.Manager):
     """
 
     def get_latest_datetime(self):
-        u"""ss
+        u"""获取最后更新记录项.
         """
+
         sync_info = None
         try:
             sync_info = self.last()
@@ -25,10 +26,14 @@ class DataManager(models.Manager):
             pass
         except SyncInfo.MultipleObjectsReturned:
             pass
-        return sync_info['add_date']
+
+        if sync_info:
+            return sync_info.add_date, sync_info.bck_name
+        else:
+            return sync_info
 
     def get_pkg_name(self, pkg_name):
-        u"""更新记录信息项
+        u"""获取更新记录信息项.
 
             :param pkg_name: 更新包
         """
@@ -54,13 +59,13 @@ class DataManager(models.Manager):
         else:
             return False
 
-    def create_sync_info(self, pkg_name):
+    def create_sync_info(self, pkg_name, base_date, bck_name=''):
         u"""更新记录信息添入.
 
             :param pkg_name: 更新包
         """
 
-        sync_info = self.model(pkg_name=pkg_name)
+        sync_info = self.model(pkg_name=pkg_name, base_date=base_date, bck_name=bck_name)
         sync_info.save(using=self._db)
 
         return sync_info
@@ -71,7 +76,9 @@ class SyncInfo(models.Model):
     """
 
     id = models.AutoField(primary_key=True, verbose_name=_('auto ID'))
-    pkg_name = models.CharField(_('pkg_name'), max_length=30, unique=True)
+    pkg_name = models.CharField(_('update package filename'), max_length=30, unique=True)
+    bck_name = models.CharField(_('back package filename'), max_length=30, null=True)
+    base_date = models.DateTimeField(_('base datetime'), auto_now_add=True)
     add_date = models.DateTimeField(_('insert datetime'), auto_now_add=True)
     status = models.BooleanField(_('status'), default=True)
 
@@ -89,7 +96,7 @@ class SyncInfo(models.Model):
         return self.gen_pkg_name
 
     def update_info(self, **dicts):
-        u"""设置并更新指定字段的值
+        u"""设置并更新指定字段的值.
 
             :param dicts
         """

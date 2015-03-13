@@ -12,11 +12,11 @@ class SyncInfoAdmin(admin.ModelAdmin):
     u"""自定义ModelAdmin.
     """
 
-    list_display = ('id', 'user', 'username', 'password', 'status', 'add_date',)
+    list_display = ('id', 'pkg_name', 'bck_name', 'base_date', 'add_date', 'status', )
 
     ordering = ('-id',)
-    list_filter = ('status', 'add_date',)
-    search_fields = ('user__username', 'username',)
+    list_filter = ('pkg_name', 'bck_name',)
+    search_fields = ('pkg_name', 'base_date',)
 
 
 admin.site.register(SyncInfo)
