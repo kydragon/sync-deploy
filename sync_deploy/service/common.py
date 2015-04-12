@@ -1,6 +1,8 @@
 #!usr/bin/env python
 # coding: utf-8
 
+from __future__ import unicode_literals, print_function
+
 u"""代码工具箱
 """
 
@@ -8,10 +10,10 @@ __author__ = 'kylinfish@126.com'
 __date__ = '2013/8/15'
 
 import os
-import six
 import zipfile
 import random
 from time import strftime, localtime
+from sync_deploy.service.config import log
 
 
 def generate_name():
@@ -93,21 +95,21 @@ class MyUtilsOS(object):
 
         MyUtilsOS.rm_file_in_folder(test_path)
         MyUtilsOS.mk_folder(test_path)
-        six.print_(MyUtilsOS.is_file_in_folder(test_path))
+        log.debug(MyUtilsOS.is_file_in_folder(test_path))
 
         # 创建空子目录判断
         for i in range(5):
             MyUtilsOS.mk_folder(os.path.join(test_path, str(i)))
-        six.print_(MyUtilsOS.is_file_in_folder(test_path))
+        log.debug(MyUtilsOS.is_file_in_folder(test_path))
 
         # 根目录创建文件判断
         MyUtilsOS.mk_folder(os.path.join(test_path, 'w'), 'f')
-        six.print_(MyUtilsOS.is_file_in_folder(test_path))
+        log.debug(MyUtilsOS.is_file_in_folder(test_path))
 
         # 子目录创建文件判断
         os.remove(os.path.join(test_path, 'w'))
         MyUtilsOS.mk_folder(os.path.join(test_path, '0', 'w'), 'f')
-        six.print_(MyUtilsOS.is_file_in_folder(test_path))
+        log.debug(MyUtilsOS.is_file_in_folder(test_path))
 
 
 class ZFile(object):
@@ -129,7 +131,7 @@ class ZFile(object):
         path = path.replace('//', '/')
         if not arc_name:
             if path.startswith(self.basedir):
-                # six.print_(path, '|', self.basedir
+                # log.debug(path, '|', self.basedir)
                 arc_name = path[len(self.basedir):]
             else:
                 arc_name = ''
@@ -208,11 +210,11 @@ class AttributeDict(dict):
         """
 
         env_ky_a = AttributeDict(key_a=1, key_b=2)
-        six.print_(env_ky_a.key_a, '---|---', env_ky_a.key_b)
+        log.debug(env_ky_a.key_a, '---|---', env_ky_a.key_b)
 
         env_ky_dict = {'key_A': 11, 'key_B': 12}
         env_ky_b = AttributeDict(env_ky_dict)
-        six.print_(env_ky_b.key_A, '---|---', env_ky_b.key_B)
+        log.debug(env_ky_b.key_A, '---|---', env_ky_b.key_B)
 
 
 if __name__ == '__main__':

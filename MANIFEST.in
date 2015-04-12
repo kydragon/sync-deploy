@@ -3,6 +3,38 @@ include MANIFEST.in
 include CHANGELOG.rst
 include setup.py
 
+include sync_deploy.egg-info/PKG-INFO
+include sync_deploy.egg-info/SOURCES.txt
+include sync_deploy.egg-info/dependency_links.txt
+include sync_deploy.egg-info/requires.txt
+include sync_deploy.egg-info/top_level.txt
+include sync_deploy.egg-info/zip-safe
 
+include sync_deploy/service/__init__.py
+include sync_deploy/service/common.py
+include sync_deploy/service/config.py
+include sync_deploy/service/rename_lower.py
+include sync_deploy/service/update_upload.py
+include sync_deploy/service/update_collector.py
 
-recursive-include project_demo *.py
+include sync_deploy/management/__init__.py
+include sync_deploy/management/commands/__init__.py
+include sync_deploy/management/commands/compile.py
+include sync_deploy/management/commands/forcecompile.py
+include sync_deploy/management/commands/namelower.py
+include sync_deploy/management/commands/rollback.py
+include sync_deploy/management/commands/upload.py
+
+include sync_deploy/__init__.py
+include sync_deploy/admin.py
+include sync_deploy/models.py
+include sync_deploy/backends.py
+
+include sync_deploy/utility/__init__.py
+include sync_deploy/utility/exports.py
+include sync_deploy/utility/imports.py
+include sync_deploy/utility/urls_conf.py
+include sync_deploy/utility/urls_data.py
+
+include sync_deploy/locale/zh_CN/LC_MESSAGES/django.po
+include sync_deploy/locale/zh_CN/LC_MESSAGES/django.mo

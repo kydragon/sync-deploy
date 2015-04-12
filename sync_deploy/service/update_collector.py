@@ -1,6 +1,8 @@
 #!usr/bin/env python
 # coding: utf-8
 
+from __future__ import unicode_literals, print_function
+
 u"""
     迭代发布更新文件三步骤：
         1, 递归当前根目录, 把指定日期后修改的文件全部找出.
@@ -19,10 +21,8 @@ import os
 import os.path
 from time import time, ctime
 
-import six
-
 from sync_deploy.service.common import generate_name, ZFile
-from sync_deploy.service.config import env_ky
+from sync_deploy.service.config import log, env_ky
 from sync_deploy.backends import save_backend
 
 
@@ -66,7 +66,7 @@ class Collector(object):
                         env_ky.dynamic_file_exist = True
 
                     file_paths = ''.join((file_paths, '%s\n' % old_path))
-                    six.print_('%15f -------- %s' % (mod_time, ctime(mod_time)))
+                    log.debug('%15f -------- %s' % (mod_time, ctime(mod_time)))
 
         return file_paths
 
@@ -77,7 +77,7 @@ class Collector(object):
             os.makedirs(env_ky.storage_path)
         else:
             if os.path.ismount(env_ky.storage_path) or not os.path.isdir(env_ky.storage_path):
-                six.print_(u'亲, 指定的存储路径错误!')
+                log.error(u'亲, 指定的存储路径错误!')
                 return
 
         log_name = os.path.join(env_ky.storage_path, '%s.log' % self._gen_pkg_name)

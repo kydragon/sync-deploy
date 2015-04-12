@@ -6,6 +6,8 @@ __pycache__/
 
 dist/
 build/
-check_docking.egg-info/
+sync_depend/
+sync_deploy.egg-info/
 
 setuptool.sh
+start-env.rst

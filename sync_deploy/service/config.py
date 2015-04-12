@@ -1,11 +1,19 @@
 #!usr/bin/env python
 # coding: utf-8
 
+from __future__ import unicode_literals, print_function
+
 __author__ = 'kylinfish@126.com'
 __date__ = '2013/8/15'
 
+import logging
 from django.conf import settings
 from sync_deploy.service.common import AttributeDict
+
+logging.basicConfig()
+
+log = logging.getLogger("sync_deploy")
+log.setLevel(logging.DEBUG)
 
 # 查找哪些类型的文件
 FILTER_TYPE = ('.pyo', '.pyc', '.js', '.css', '.html', '.gif', '.jpg', '.png')

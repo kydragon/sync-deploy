@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding: utf-8
 
+from __future__ import unicode_literals, print_function
+
 u"""
     递归更改一个目录下的所有文件名为小写.
 
@@ -13,8 +15,8 @@ __date__ = '2013/8/15'
 
 import os
 import sys
-import six
 import os.path
+from sync_deploy.service.config import log
 
 
 def lower_file_name(directory):
@@ -22,14 +24,14 @@ def lower_file_name(directory):
     """
 
     if not os.path.exists(directory) or not os.path.isdir(directory):
-        six.print_(u"无效的目录")
+        log.error(u"无效的目录")
         return
 
     for i in os.listdir(directory):
         lower_name = i.lower()
         old_path = os.path.join(directory, i)
         new_path = os.path.join(directory, lower_name)
-        six.print_('%s : %s -----> %s' % (old_path, i, lower_name))
+        log.debug('%s : %s -----> %s' % (old_path, i, lower_name))
 
         if os.path.isdir(old_path):
             lower_file_name(old_path)
@@ -43,7 +45,7 @@ if __name__ == '__main__':
 
     arg_num = len(sys.argv)
     if arg_num < 2:
-        six.print_(u'请输入目录名')
+        log.debug(u'请输入目录名')
     else:
         file_dir = sys.argv[1]
         lower_file_name(file_dir)

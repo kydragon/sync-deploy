@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 __author__ = 'kylinfish@126.com'
 __date__ = '2014/09/20'
 

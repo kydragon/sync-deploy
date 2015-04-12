@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals, print_function
+
 u"""对拦截curl记录保存文件, 做处理去掉重复行.
 """
 
@@ -27,5 +29,8 @@ class Command(NoArgsCommand):
         if upload_config and upload_method:
             paths = '/'.join(upload_config.split('.'))
             fabric_file = os.path.join(project_catalog, paths)
+
+            # Debug:
+            print("fab -f %s.py %s" % (fabric_file, upload_method))
 
             os.system("fab -f %s.py %s" % (fabric_file, upload_method))
