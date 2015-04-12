@@ -30,7 +30,6 @@ class Command(NoArgsCommand):
             paths = '/'.join(upload_config.split('.'))
             fabric_file = os.path.join(project_catalog, paths)
 
-            # Debug:
             print("fab -f %s.py %s" % (fabric_file, upload_method))
-
+            main(fab_file=fabric_file, cmd_name=upload_method)
             os.system("fab -f %s.py %s" % (fabric_file, upload_method))

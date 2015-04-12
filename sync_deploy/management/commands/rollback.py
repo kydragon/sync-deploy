@@ -13,6 +13,7 @@ import os
 from django.conf import settings
 from django.utils.importlib import import_module
 from django.core.management.base import NoArgsCommand
+from ..fabric import main
 
 
 class Command(NoArgsCommand):
@@ -30,4 +31,5 @@ class Command(NoArgsCommand):
             paths = '/'.join(upload_config.split('.'))
             fabric_file = os.path.join(project_catalog, paths)
 
-            os.system("fab -f %s.py %s" % (fabric_file, rollback_method))
+            main(fab_file=fabric_file, cmd_name=rollback_method)
+            # os.system("fab -f %s.py %s" % (fabric_file, rollback_method))
